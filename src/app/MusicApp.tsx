@@ -1,25 +1,14 @@
-import { useCallback, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
-import type { Song } from '../types'
 import FavoritesPage from '../features/favorites/pages/FavoritesPage'
 import LibraryPage from '../features/library/pages/LibraryPage'
 import PlaylistDetailPage from '../features/playlists/pages/PlaylistDetailPage'
 import PlaylistsPage from '../features/playlists/pages/PlaylistsPage'
 import PlayerBar from '../features/player/components/PlayerBar'
+import PlayerClock from '../features/player/components/PlayerClock'
 import SimplePage from './SimplePage'
 import '../App.css'
 
 function  MusicApp() {
-  const [currentSong, setCurrentSong] = useState<Song | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-
-  const playSong = useCallback((song: Song) => {
-    setCurrentSong(song)
-    setIsPlaying(true)
-  }, [])
-  const togglePlayback = useCallback(() => setIsPlaying((playing) => !playing), [])
-  const stopPlayback = useCallback(() => setIsPlaying(false), [])
-
   return (
     <BrowserRouter>
       <div className="app-shell">
@@ -38,7 +27,7 @@ function  MusicApp() {
 
         <main>
           <Routes>
-            <Route path="/" element={<LibraryPage onPlay={playSong} />} />
+            <Route path="/" element={<LibraryPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
             <Route path="/playlists/:id" element={<PlaylistDetailPage />} />
@@ -49,7 +38,8 @@ function  MusicApp() {
           </Routes>
         </main>
 
-        <PlayerBar song={currentSong} isPlaying={isPlaying} onToggle={togglePlayback} onEnded={stopPlayback} />
+        <PlayerClock />
+        <PlayerBar />
       </div>
     </BrowserRouter>
   )

@@ -3,16 +3,12 @@ import { FixedSizeList } from 'react-window'
 import { GENRES, SONGS } from '../data/songs'
 import MemoizedSongRow, { type SongRowData } from '../components/SongRow'
 import { useDebounce } from '../../../shared/hooks/useDebounce'
-import type { Genre, Song } from '../../../types'
+import type { Genre } from '../../../types'
 
 type SortOrder = 'default' | 'title' | 'duration'
 type GenreFilter = Genre | 'all'
 
-interface LibraryPageProps {
-  onPlay: (song: Song) => void
-}
-
-function LibraryPage({ onPlay }: LibraryPageProps) {
+function LibraryPage() {
   const [query, setQuery] = useState('')
   const [genre, setGenre] = useState<GenreFilter>('all')
   const [sortOrder, setSortOrder] = useState<SortOrder>('default')
@@ -40,7 +36,7 @@ function LibraryPage({ onPlay }: LibraryPageProps) {
     return filteredSongs
   }, [debouncedQuery, genre, sortOrder])
 
-  const rowData = useMemo(() => ({ songs: visibleSongs, onPlay }), [visibleSongs, onPlay])
+  const rowData = useMemo(() => ({ songs: visibleSongs }), [visibleSongs])
   const getSongKey = useCallback((index: number, data: SongRowData) => data.songs[index].id, [])
 
   return (

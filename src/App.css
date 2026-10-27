@@ -356,6 +356,96 @@ main {
   cursor: not-allowed;
 }
 
+.song-actions button.favorite-active,
+.song-actions button.favorite-active:hover {
+  border-color: #f3d9e4;
+  color: #d34b79;
+  background: #fff5f8;
+}
+
+.favorites-page .page-heading {
+  align-items: center;
+}
+
+.play-all-button {
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: #7154d9;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.play-all-button:hover {
+  background: #6045c6;
+}
+
+.favorites-list {
+  overflow: hidden;
+  border: 1px solid #e9eaf0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.favorite-song-row {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 16px;
+  border-bottom: 1px solid #f0f0f4;
+}
+
+.favorite-song-row:last-child {
+  border-bottom: 0;
+}
+
+.favorite-song-play,
+.favorite-remove {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #e9e8ef;
+  border-radius: 8px;
+  color: #7154d9;
+  background: #fff;
+  cursor: pointer;
+}
+
+.favorite-song-info {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.favorite-song-info strong {
+  overflow: hidden;
+  color: #30323e;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorite-song-info span,
+.favorite-song-duration {
+  color: #858795;
+  font-size: 10px;
+}
+
+.favorite-song-duration {
+  font-variant-numeric: tabular-nums;
+}
+
+.favorite-remove {
+  color: #d34b79;
+}
+
 .empty-state {
   display: grid;
   min-height: 190px;
@@ -400,6 +490,27 @@ main {
   min-width: 0;
   align-items: center;
   gap: 12px;
+}
+
+.player-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.player-buttons > button:not(.player-toggle) {
+  padding: 4px;
+  border: 0;
+  color: #777987;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.player-buttons > button:disabled {
+  color: #b6b7c0;
+  cursor: not-allowed;
 }
 
 .player-art {

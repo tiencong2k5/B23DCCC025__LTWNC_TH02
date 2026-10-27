@@ -2,15 +2,21 @@ import { memo, useCallback } from 'react'
 import type { ListChildComponentProps } from 'react-window'
 import type { Song } from '../../../types'
 import { formatDuration } from '../../../shared/utils/format'
+import { useFavoritesStore } from '../../favorites/useFavoritesStore'
+import { usePlayerStore } from '../../player/usePlayerStore'
 
 export interface SongRowData {
   songs: Song[]
-  onPlay: (song: Song) => void
 }
 
 function SongRow({ index, style, data }: ListChildComponentProps<SongRowData>) {
   const song = data.songs[index]
-  const playSong = useCallback(() => data.onPlay(song), [data, song])
+  const isFavorite = useFavoritesStore((state) => state.ids.includes(song.id))
+  const toggleFavorite = useFavoritesStore((state) => state.toggle)
+  const addToQueue = usePlayerStore((state) => state.addToQueue)
+  const playSong = useCallback(() => {
+    usePlayerStore.getState().playQueue(data.songs, index)
+  }, [data.songs, index])
 
   return (
     <div className="song-row" style={style} role="row">
@@ -26,10 +32,16 @@ function SongRow({ index, style, data }: ListChildComponentProps<SongRowData>) {
         <button className="row-play" type="button" onClick={playSong} aria-label={`Phát ${song.title}`}>
           Phát
         </button>
-        <button type="button" disabled title="Sẽ có trong phần 2" aria-label={`Yêu thích ${song.title}`}>
-          ♥
+        <button
+          type="button"
+          className={isFavorite ? 'favorite-active' : undefined}
+          onClick={() => toggleFavorite(song.id)}
+          aria-label={isFavorite ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}
+          aria-pressed={isFavorite}
+        >
+          {isFavorite ? '♥' : '♡'}
         </button>
-        <button type="button" disabled title="Sẽ có trong phần 2" aria-label={`Thêm ${song.title} vào hàng đợi`}>
+        <button type="button" onClick={() => addToQueue(song)} aria-label={`Thêm ${song.title} vào hàng đợi`}>
           +
         </button>
       </div>
