@@ -4,6 +4,7 @@ import { GENRES, SONGS } from '../data/songs'
 import MemoizedSongRow, { type SongRowData } from '../components/SongRow'
 import { useDebounce } from '../../../shared/hooks/useDebounce'
 import type { Genre } from '../../../types'
+import { usePlaylists } from '../../playlists/PlaylistContext'
 
 type SortOrder = 'default' | 'title' | 'duration'
 type GenreFilter = Genre | 'all'
@@ -12,6 +13,8 @@ function LibraryPage() {
   const [query, setQuery] = useState('')
   const [genre, setGenre] = useState<GenreFilter>('all')
   const [sortOrder, setSortOrder] = useState<SortOrder>('default')
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState('')
+  const playlists = usePlaylists()
   const debouncedQuery = useDebounce(query, 300)
 
   const visibleSongs = useMemo(() => {
@@ -36,7 +39,7 @@ function LibraryPage() {
     return filteredSongs
   }, [debouncedQuery, genre, sortOrder])
 
-  const rowData = useMemo(() => ({ songs: visibleSongs }), [visibleSongs])
+  const rowData = useMemo(() => ({ songs: visibleSongs, selectedPlaylistId }), [selectedPlaylistId, visibleSongs])
   const getSongKey = useCallback((index: number, data: SongRowData) => data.songs[index].id, [])
 
   return (
@@ -77,6 +80,19 @@ function LibraryPage() {
             <option value="default">Mặc định</option>
             <option value="title">Tên A–Z</option>
             <option value="duration">Thời lượng tăng dần</option>
+          </select>
+        </div>
+        <div className="select-field">
+          <label htmlFor="playlist-filter">Playlist đang chọn</label>
+          <select
+            id="playlist-filter"
+            value={selectedPlaylistId}
+            onChange={(event) => setSelectedPlaylistId(event.target.value)}
+          >
+            <option value="">Chọn playlist</option>
+            {playlists.map((playlist) => (
+              <option key={playlist.id} value={playlist.id}>{playlist.name}</option>
+            ))}
           </select>
         </div>
       </div>

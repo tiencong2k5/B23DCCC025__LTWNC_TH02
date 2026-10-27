@@ -5,6 +5,7 @@ import App from './App'
 describe('music library', () => {
   beforeEach(() => {
     window.localStorage.removeItem('music-favorites')
+    window.localStorage.removeItem('music-playlists')
   })
 
   it('debounces searching by song title and displays the matching result', async () => {
@@ -47,5 +48,43 @@ describe('music library', () => {
 
     expect(await screen.findByText('Mưa tháng Sáu 1')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Phát tất cả' })).toBeInTheDocument()
+  })
+
+  it('creates playlists with validation, adds a song, and plays all from its detail page', async () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('link', { name: 'Playlist' }))
+
+    const nameInput = await screen.findByLabelText('Tên playlist')
+    fireEvent.click(screen.getByRole('button', { name: 'Tạo' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Tên playlist không được để trống')
+
+    fireEvent.change(nameInput, { target: { value: 'Nhạc chill' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Tạo' }))
+    expect(await screen.findByText('Nhạc chill')).toBeInTheDocument()
+    expect(window.localStorage.getItem('music-playlists')).toContain('Nhạc chill')
+
+    fireEvent.change(nameInput, { target: { value: 'nhạc CHILL' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Tạo' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Tên playlist đã tồn tại')
+
+    fireEvent.click(screen.getByRole('link', { name: 'Thư viện' }))
+    fireEvent.change(screen.getByLabelText('Playlist đang chọn'), {
+      target: { value: JSON.parse(window.localStorage.getItem('music-playlists') ?? '[]')[0].id },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Thêm Mưa tháng Sáu 1 vào playlist đang chọn' }))
+    fireEvent.click(screen.getByRole('link', { name: 'Playlist' }))
+    fireEvent.click(await screen.findByRole('link', { name: /Nhạc chill/ }))
+
+    expect(await screen.findByText(/Tổng thời lượng: 2 phút 30 giây/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Phát tất cả' }))
+    expect(screen.getByText('Đang phát: Mưa tháng Sáu 1 – Lê Minh')).toBeInTheDocument()
+  })
+
+  it('toggles between light and dark themes', () => {
+    render(<App />)
+    expect(document.querySelector('.app-shell')).toHaveAttribute('data-theme', 'light')
+    fireEvent.click(screen.getByRole('button', { name: 'Giao diện tối' }))
+    expect(document.querySelector('.app-shell')).toHaveAttribute('data-theme', 'dark')
+    expect(screen.getByRole('button', { name: 'Giao diện sáng' })).toBeInTheDocument()
   })
 })
