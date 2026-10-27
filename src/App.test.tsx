@@ -2,13 +2,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 
-describe('music library', () => {
+describe('Ứng dụng trình phát nhạc', () => {
   beforeEach(() => {
     window.localStorage.removeItem('music-favorites')
     window.localStorage.removeItem('music-playlists')
   })
 
-  it('debounces searching by song title and displays the matching result', async () => {
+  it('chờ debounce rồi lọc theo tên bài hát', async () => {
     render(<App />)
 
     fireEvent.change(screen.getByLabelText('Tìm kiếm'), {
@@ -23,7 +23,7 @@ describe('music library', () => {
     })
   })
 
-  it('shows an empty state when the search has no matches', async () => {
+  it('hiển thị trạng thái rỗng khi không có kết quả tìm kiếm', async () => {
     render(<App />)
 
     fireEvent.change(screen.getByLabelText('Tìm kiếm'), {
@@ -33,7 +33,7 @@ describe('music library', () => {
     expect(await screen.findByText('Không tìm thấy bài hát nào.')).toBeInTheDocument()
   })
 
-  it('plays the visible list and persists favorites on the favorites page', async () => {
+  it('phát danh sách đang lọc và lưu bài yêu thích', async () => {
     render(<App />)
 
     fireEvent.change(screen.getByLabelText('Thể loại'), {
@@ -50,7 +50,7 @@ describe('music library', () => {
     expect(screen.getByRole('button', { name: 'Phát tất cả' })).toBeInTheDocument()
   })
 
-  it('creates playlists with validation, adds a song, and plays all from its detail page', async () => {
+  it('tạo playlist, thêm bài hát và phát danh sách từ trang chi tiết', async () => {
     render(<App />)
     fireEvent.click(screen.getByRole('link', { name: 'Playlist' }))
 
@@ -80,7 +80,7 @@ describe('music library', () => {
     expect(screen.getByText('Đang phát: Mưa tháng Sáu 1 – Lê Minh')).toBeInTheDocument()
   })
 
-  it('toggles between light and dark themes', () => {
+  it('chuyển đổi giữa giao diện sáng và tối', () => {
     render(<App />)
     expect(document.querySelector('.app-shell')).toHaveAttribute('data-theme', 'light')
     fireEvent.click(screen.getByRole('button', { name: 'Giao diện tối' }))

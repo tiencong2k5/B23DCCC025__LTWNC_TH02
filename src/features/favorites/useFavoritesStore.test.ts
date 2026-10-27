@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useFavoritesStore } from './useFavoritesStore'
 
-describe('favorites store', () => {
+describe('Kho bài hát yêu thích', () => {
   beforeEach(() => {
     window.localStorage.removeItem('music-favorites')
     useFavoritesStore.setState({ ids: [] })
   })
 
-  it('toggles favorite ids and persists them', () => {
+  it('bật tắt bài yêu thích và lưu vào localStorage', () => {
     useFavoritesStore.getState().toggle('s1')
 
     expect(useFavoritesStore.getState().ids).toEqual(['s1'])

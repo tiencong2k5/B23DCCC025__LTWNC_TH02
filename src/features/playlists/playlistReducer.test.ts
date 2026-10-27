@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { playlistReducer, type Playlist } from './playlistReducer'
 
-describe('playlistReducer', () => {
+describe('Bộ giảm trạng thái playlist', () => {
   const playlist: Playlist = { id: 'p1', name: 'Chill', songIds: ['s1'] }
 
-  it('creates, renames, and removes playlists without mutating state', () => {
+  it('tạo, đổi tên và xóa playlist mà không sửa state cũ', () => {
     const initialState = [playlist]
     const created = playlistReducer(initialState, {
       type: 'create',
@@ -17,10 +17,15 @@ describe('playlistReducer', () => {
     expect(playlistReducer(created, { type: 'remove', id: 'p2' })).toEqual([playlist])
   })
 
-  it('adds a song only once and can remove it', () => {
+  it('thêm bài hát không trùng và có thể bỏ bài', () => {
     const withSong = playlistReducer([playlist], { type: 'addSong', id: 'p1', songId: 's2' })
     const withoutDuplicate = playlistReducer(withSong, { type: 'addSong', id: 'p1', songId: 's2' })
     expect(withoutDuplicate[0].songIds).toEqual(['s1', 's2'])
     expect(playlistReducer(withoutDuplicate, { type: 'removeSong', id: 'p1', songId: 's1' })[0].songIds).toEqual(['s2'])
+  })
+
+  it('giữ nguyên state khi xóa playlist không tồn tại', () => {
+    const state = [playlist]
+    expect(playlistReducer(state, { type: 'remove', id: 'missing' })).toEqual(state)
   })
 })
